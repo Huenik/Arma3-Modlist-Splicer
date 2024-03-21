@@ -4,7 +4,7 @@
   <head>
     <meta name="arma:Type" content="list" />
     <meta name="generator" content="Arma 3 Launcher - https://arma3.com" />
-    <title>Arma 3</title>
+    <title>Huenik's Arma 3 Modlist Splicer</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css" />
     <style>
 body {
