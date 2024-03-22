@@ -108,11 +108,59 @@ if (FileExist(FolderToProcess "\*.*")) {
 	MsgBox, The folder "%FolderToProcess%" does not exist. Exiting script.
 }
 
+MsgBox, 4,, Would you like to add this to your ARMA3 presets? (press Yes or No)
+IfMsgBox Yes
+	goto,modlist_preset_injector
+else
+	exitapp
 
-; Read the content of the combined output file
-FileRead, CombinedOutputContent, %CombinedFilePath%
+modlist_preset_injector:
 
-; Display the content in a message box
-MsgBox, %CombinedOutputContent%
+Inputbox, Filename, Name the preset, give your preset a name
 
-;\?id=\d+\s
+pattern := "<a href=""(https:\/\/steamcommunity\.com\/sharedfiles\/filedetails\/\?id=\d+)"""
+matches := [] ; Initialize an empty array to store matches
+
+currentPosition := 1
+while (currentPosition := RegExMatch(CombinedContent, pattern, match, currentPosition)) {
+    ; Remove the first 55 characters from the match
+	match1 := SubStr(match1, 56)
+    ; Append "<id>steam: " to the start and "</id>" to the end of each match
+	match1 := "<id>steam:" . match1 . "</id>"
+	matches.Push(match1)
+	currentPosition += StrLen(match) ; Move to the next position after the current match
+}
+
+line1 =<?xml version="1.0" encoding="utf-8"?>
+line2 =<addons-presets>
+line3 =  <last-update>2023-11-19T16:23:43.4408522+10:30</last-update>
+line4 =   <published-ids>
+
+line5 =  </published-ids>
+line6 =  <dlcs-appids />
+line7 =</addons-presets>
+
+FileDelete,file.txt
+FileAppend,%line1%`n,file.txt
+FileAppend,%line2%`n,file.txt
+FileAppend,%line3%`n,file.txt
+FileAppend,%line4%`n,file.txt
+
+if (matches.Length()) {
+    ; Display all matches
+	for index, value in matches {
+		FileAppend,    %value%`n  ,file.txt
+	}
+} else {
+	MsgBox % "No matches found."
+}
+FileAppend,%line5%`n,file.txt
+FileAppend,%line6%`n,file.txt
+FileAppend,%line7%,file.txt
+dest := "C:\Users\" . A_UserName . "\AppData\Local\Arma 3 Launcher\Presets\" . fileName . ".preset2"
+FileMove, file.txt, %dest%
+
+MsgBox,,All Done, Check your ARMA3 launcher for the preset you named %fileName%.
+
+exitapp
+f3::exitapp
