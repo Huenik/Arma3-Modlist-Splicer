@@ -109,10 +109,6 @@ if (FileExist(FolderToProcess "\*.*")) {
 }
 
 
-; Read the content of the combined output file
-FileRead, CombinedOutputContent, %CombinedFilePath%
-
-; Display the content in a message box
-MsgBox, %CombinedOutputContent%
-
+FileRead, readfile,"\output\CombinedOutput.html"
+MsgBox, %readfile%
 ;\?id=\d+\s
